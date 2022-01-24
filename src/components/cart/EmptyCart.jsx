@@ -1,4 +1,4 @@
-
+/* eslint-disable jsx-a11y/alt-text */
 import { makeStyles, Typography, Box, Button } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 

@@ -3,6 +3,7 @@ import mongoose  from "mongoose";
 
 
 const Connection =  async (username, password) => {
+    // const URL = "mongodb://localhost:27017/flipkart"
     const URL = `mongodb+srv://${username}:${password}@myntraclone.xwqyb.mongodb.net/DATABASES?retryWrites=true&w=majority`
     try{
      await mongoose.connect(URL, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex:true});

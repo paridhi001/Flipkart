@@ -25,9 +25,9 @@ const GroupedButton = () => {
 
     return (
         <ButtonGroup className={classes.component} >
-            <Button className={classes.button} onClick={() => handleDecrement()} disabled={counter == 1}>-</Button>
+            <Button className={classes.button} onClick={() => handleDecrement()} disabled={counter === 1}>-</Button>
             <Button>{counter}</Button>
-            <Button className={classes.button} onClick={() => handleIncrement()} disabled={counter == 10}>+</Button>
+            <Button className={classes.button} onClick={() => handleIncrement()} disabled={counter === 10}>+</Button>
         </ButtonGroup>
     );
 }

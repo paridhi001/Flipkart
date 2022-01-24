@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { Box, makeStyles, Button} from "@material-ui/core";
 import clsx from "clsx";
 import { ShoppingCart as Cart, FlashOn as Flash} from "@material-ui/icons";

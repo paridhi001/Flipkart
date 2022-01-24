@@ -1,5 +1,5 @@
-
-import { Box, AppBar, Toolbar, makeStyles, withStyles, Typography, IconButton, Drawer, List, ListItem } from '@material-ui/core';
+/* eslint-disable jsx-a11y/alt-text */
+import { Box, AppBar, Toolbar, makeStyles, withStyles, Typography, IconButton, Drawer, List } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 //components

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { navData } from "../../constants/data";
 import { Box, Typography, makeStyles} from "@material-ui/core";
 

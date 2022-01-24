@@ -7,10 +7,13 @@ export const userSignUp = async (request, response) => {
         if(exist) {
             return response.status(401).json( 'User already exist');
         }
+
         const user = request.body;
         const newUser = new User(user);
         await newUser.save();
-        response.status(200).json(`${user.firstName} has been successfully registered`);
+        // console.log(newUser)
+
+        response.status(200).json(`${user.firstname} has been successfully registered`);
         
     } catch (error) {
         response.json('Error: ', error.message);
@@ -19,9 +22,9 @@ export const userSignUp = async (request, response) => {
 
 export const userLoginIn = async (request, response) => {
     try {
-        let user = await User.findOne({ username: request.body.username, password: request.body.password });
+        let user = await User.findOne({ googleid: request.body.googleid });
         if(user) {
-            return response.status(200).json(`${request.body.username}  is successfully registered`);
+            return response.status(200).json({username:user.username});
         } else {
             return response.status(401).json('Invalid Login');
         }

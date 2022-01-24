@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import {Box,  makeStyles, Typography, Button, Divider} from '@material-ui/core';
 import Carousel from 'react-multi-carousel';
 import "react-multi-carousel/lib/styles.css";
@@ -99,7 +100,7 @@ const Slide = ({timer, title, products}) => {
             >
             {
                 (products||[]).map((product,i) => (
-                <Link to={`product/${product.id}`} style={{textDecoration: 'none'}}>
+                <Link key={i} to={`product/${product.id}`} style={{textDecoration: 'none'}}>
                     <Box textAlign="center" className={classes.wrapper} key={i}>
                     <img src = {product.url} className={classes.image}/>
                     <Typography className={classes.text} style={{ fontWeight: 600, color: '#212121' }}>{product.title.shortTitle}</Typography>

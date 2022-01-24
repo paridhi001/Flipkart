@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { getProductDetails } from "../../redux/actions/productActions";

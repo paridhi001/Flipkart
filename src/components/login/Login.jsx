@@ -2,7 +2,7 @@ import React, { useState} from "react";
 import { Box, makeStyles, Typography, TextField, Button } from "@material-ui/core";
 import { Dialog, DialogContent } from "@material-ui/core";
 import { authenticateLogin, authenticateSignup } from "../../service/api";
-
+import { auth } from "../../firebase";
 
 const useStyle = makeStyles({
     component: {
@@ -52,6 +52,10 @@ const useStyle = makeStyles({
     text: {
         color: '#878787',
         fontSize: 12
+    },
+    smallText: {
+        color: '#878787',
+        fontSize: 10
     },
     createText: {
         margin: 'auto 0 3px 0',
@@ -106,7 +110,6 @@ const Login = ({ open, setOpen, setAccount}) => {
 
     const onInputChange = (e) => {
         setSignup({ ...signup, [e.target.name]: e.target.value });
-        console.log(signup);
     }
 
   
@@ -123,20 +126,71 @@ const Login = ({ open, setOpen, setAccount}) => {
 
 
     const signupUser = async () => {
+
+        try{
     
-        let response = await authenticateSignup(signup);
-        if (!response) return;
-        handleClose();
-        setAccount(signup.username);
+            let res=await auth.createUserWithEmailAndPassword(signup.email,signup.password);
+    
+            let finalsignup={
+                googleid:res.user.uid,
+                email:signup.email,
+                firstname:signup.firstname,
+                lastname:signup.lastname,
+                username:signup.username,
+                phone:signup.phone
+            }
+            
+            let response = await authenticateSignup(finalsignup);
+
+            await res.user.sendEmailVerification();
+            await auth.signOut();
+
+            if (!response) return;
+            handleClose();
+            console.log("Please verify you email first then login back to system")
+
+        }
+        catch(e){
+            // console.log(e)
+        }
     }
 
     const loginUser = async() => {
-        
-        let response = await authenticateLogin(login);
-        if(!response) 
-            return;
-            handleClose();
-            setAccount(login.username);
+
+        try{
+            let res=await auth.signInWithEmailAndPassword(login.username,login.password)
+            if(!res.user.emailVerified){
+                await auth.signOut()
+                console.log("please verify your email first then try to login")
+                return ;
+            }
+
+            let response = await authenticateLogin({googleid:res.user.uid});
+            if(response && response.data && response.data.username){
+                handleClose();
+                setAccount(response.data.username);
+            }
+            else{
+                return;
+            }
+
+        }
+        catch(e){
+            console.log(e)
+        }
+
+    }
+
+    const forgotPasswordClicked=async(e)=>{
+        e.preventDefault();
+        try{
+            let email=login.username;
+            await auth.sendPasswordResetEmail(email)
+        }
+        catch(e){
+            // console.log(e)
+        }
+
     }
 
     return (
@@ -156,7 +210,8 @@ const Login = ({ open, setOpen, setAccount}) => {
                         <Typography className={classes.text}>By continuing, you agree to Flipkart's Terms of Use and Privacy Policy.</Typography>
                         <Button onClick={() => loginUser()} className={classes.loginbtn} >Login</Button>
                         <Typography className={classes.text} style={{ textAlign: 'center' }}>OR</Typography>
-                        <Button className={classes.requestbtn}>Request OTP</Button>
+                        <Button className={classes.requestbtn} onClick={forgotPasswordClicked}>Forgot Password?</Button>
+                        <Typography className={classes.smallText} onClick={() => toggleUserAccount()}>To reset password type email in email section and click on above button</Typography>
                         <Typography className={classes.createText} onClick={() => toggleUserAccount()}>New to Flipkart? Create an account</Typography>
                     </Box> :
                     <Box className={classes.login}>

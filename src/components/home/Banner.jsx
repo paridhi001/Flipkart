@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import Carousel from 'react-material-ui-carousel';
 import { bannerData } from '../../constants/data';
 import { makeStyles } from '@material-ui/core';

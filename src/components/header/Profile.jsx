@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import {  useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, Menu, MenuItem, makeStyles } from '@material-ui/core';
 import { PowerSettingsNew } from '@material-ui/icons';
+import { auth } from '../../firebase';
 
 const useStyle = makeStyles({
     component: {
@@ -12,6 +13,7 @@ const useStyle = makeStyles({
         marginLeft: 20
     }
 })
+
 
 const Profile = ({ account, setAccount }) => {
     const [open, setOpen] = useState(false);
@@ -25,8 +27,9 @@ const Profile = ({ account, setAccount }) => {
         setOpen(false);
     };
 
-    const logout = () => {
-        setAccount('');
+    const logout = async() => {
+        await auth.signOut()
+        await setAccount(null);
     }
     
     return (

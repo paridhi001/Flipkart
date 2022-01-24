@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { Card, Typography, Button,  Box, makeStyles } from "@material-ui/core";
 import clsx from "clsx";
 

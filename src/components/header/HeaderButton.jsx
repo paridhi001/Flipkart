@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState ,useEffect} from "react";
 import { Box, Button, makeStyles, Typography } from "@material-ui/core";
 import { ShoppingCart } from '@material-ui/icons';
 import Badge from '@material-ui/core/Badge';
@@ -8,7 +8,8 @@ import Profile from "./Profile";
 import LoginDialog from "../login/Login";
 import { LoginContext } from "../../context/ContextProvider";
 import { useSelector } from "react-redux";
-
+import { auth } from '../../firebase';
+import {authenticateLogin} from "../../service/api"
 
 const useStyle = makeStyles(theme => ({
     login: {
@@ -58,10 +59,37 @@ const useStyle = makeStyles(theme => ({
 
 }));
 
+
+
+const reauth=async (setAccount)=>{
+    
+    let unsubscribe = auth.onAuthStateChanged(async user=> {
+        try{
+            if(user && user.uid){
+                let response=await authenticateLogin({googleid:user.uid})
+                if(response && response.data && response.data.username){
+                    setAccount(response.data.username);
+                }
+            }
+        }
+        catch(e){
+            // console.log(e)
+        }
+    });
+    unsubscribe()
+}
+
+
 const HeaderButton = () => {
     const classes = useStyle();
     const [open, setOpen] = useState(false);
     const { account, setAccount } = useContext(LoginContext);
+
+    useEffect(()=>{
+        if(!account){
+            reauth(setAccount)
+        }
+    },[account,setAccount])
 
     const { cartItems } = useSelector(state => state.cart);
 

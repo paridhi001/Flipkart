@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { Box, makeStyles } from '@material-ui/core';
 import Slide from './Slide';
 
