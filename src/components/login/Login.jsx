@@ -206,7 +206,7 @@ const Login = ({ open, setOpen, setAccount}) => {
                     <Box className={classes.login}>
                         <TextField onChange={(e) => onValueChange(e)} name='username' label='Enter Email/Mobile number' />
 
-                        <TextField onChange={(e) => onValueChange(e)} name='password' label='Enter Password' />
+                        <TextField onChange={(e) => onValueChange(e)} name='password' label='Enter Password' type="password"/>
                         <Typography className={classes.text}>By continuing, you agree to Flipkart's Terms of Use and Privacy Policy.</Typography>
                         <Button onClick={() => loginUser()} className={classes.loginbtn} >Login</Button>
                         <Typography className={classes.text} style={{ textAlign: 'center' }}>OR</Typography>

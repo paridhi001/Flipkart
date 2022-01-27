@@ -1,5 +1,6 @@
 import axios from 'axios';
-const url = 'http://localhost:8000';
+const url = 'https://flipkart-backend-2pir.herokuapp.com/';
+// const url = 'http://localhost:8000';
 
 
 
