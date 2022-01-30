@@ -1,8 +1,8 @@
 import axios from 'axios';
 import * as   action from '../constants/productConstant';
 
-//const url = 'http://localhost:8000';
 const url = 'https://flipkart-backend-2pir.herokuapp.com/';
+//const url = 'http://localhost:8000';
 
 export const getProducts = () => async(dispatch) => {
     try {
