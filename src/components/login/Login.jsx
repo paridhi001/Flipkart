@@ -1,12 +1,14 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Box, makeStyles, Typography, TextField, Button } from "@material-ui/core";
 import { Dialog, DialogContent } from "@material-ui/core";
 import { authenticateLogin, authenticateSignup } from "../../service/api";
 import { auth } from "../../firebase";
+import SignupValidation from "./SignupValidation";
+import LoginValidation from "./LoginValidation";
 
 const useStyle = makeStyles({
     component: {
-        height: '85vh',
+        height: '89.5vh',
         width: '100vh',
         maxWidth: 'unset !important'
     },
@@ -15,7 +17,7 @@ const useStyle = makeStyles({
         background: '#2874f0',
         backgroundPosition: 'center 85%',
         backgroundRepeat: 'no-repeat',
-        height: '85vh',
+        height: '89.5vh',
         width: '40%',
         padding: '45px 35px',
         '& > *': {
@@ -65,6 +67,13 @@ const useStyle = makeStyles({
         fontSize: 14,
         cursor: 'pointer'
 
+    },
+    error: {
+        fontSize: 10,
+        color: '#ff6161',
+        lineHeight: 0,
+        marginTop: 10,
+        fontWeight: 600
     }
 })
 
@@ -91,19 +100,20 @@ const signupInitialValues = {
 };
 
 const loginInitialValues = {
-    username: '',
+    email: '',
     password: ''
 };
 
-const Login = ({ open, setOpen, setAccount}) => {
+const Login = ({ open, setOpen, setAccount }) => {
     const classes = useStyle();
 
     const [account, toggleAccount] = useState(initialValue.login);
     const [signup, setSignup] = useState(signupInitialValues);
     const [login, setLogin] = useState(loginInitialValues);
+    const [errors, setErrors] = useState({});
 
 
-   
+
     const onValueChange = (e) => {
         setLogin({ ...login, [e.target.name]: e.target.value });
     }
@@ -112,7 +122,7 @@ const Login = ({ open, setOpen, setAccount}) => {
         setSignup({ ...signup, [e.target.name]: e.target.value });
     }
 
-  
+
     const handleClose = () => {
         setOpen(false);
         toggleAccount(initialValue.login);
@@ -125,21 +135,23 @@ const Login = ({ open, setOpen, setAccount}) => {
     }
 
 
+
     const signupUser = async () => {
 
-        try{
-    
-            let res=await auth.createUserWithEmailAndPassword(signup.email,signup.password);
-    
-            let finalsignup={
-                googleid:res.user.uid,
-                email:signup.email,
-                firstname:signup.firstname,
-                lastname:signup.lastname,
-                username:signup.username,
-                phone:signup.phone
+        setErrors(SignupValidation(signupInitialValues));
+        try {
+
+            let res = await auth.createUserWithEmailAndPassword(signup.email, signup.password);
+
+            let finalsignup = {
+                googleid: res.user.uid,
+                email: signup.email,
+                firstname: signup.firstname,
+                lastname: signup.lastname,
+                username: signup.username,
+                phone: signup.phone
             }
-            
+
             let response = await authenticateSignup(finalsignup);
 
             await res.user.sendEmailVerification();
@@ -150,44 +162,44 @@ const Login = ({ open, setOpen, setAccount}) => {
             console.log("Please verify you email first then login back to system")
 
         }
-        catch(e){
+        catch (e) {
             // console.log(e)
         }
     }
 
-    const loginUser = async() => {
-
-        try{
-            let res=await auth.signInWithEmailAndPassword(login.username,login.password)
-            if(!res.user.emailVerified){
+    const loginUser = async () => {
+        setErrors(LoginValidation(loginInitialValues));
+        try {
+            let res = await auth.signInWithEmailAndPassword(login.username, login.password)
+            if (!res.user.emailVerified) {
                 await auth.signOut()
                 console.log("please verify your email first then try to login")
-                return ;
+                return;
             }
 
-            let response = await authenticateLogin({googleid:res.user.uid});
-            if(response && response.data && response.data.username){
+            let response = await authenticateLogin({ googleid: res.user.uid });
+            if (response && response.data && response.data.username) {
                 handleClose();
                 setAccount(response.data.username);
             }
-            else{
+            else {
                 return;
             }
 
         }
-        catch(e){
+        catch (e) {
             console.log(e)
         }
 
     }
 
-    const forgotPasswordClicked=async(e)=>{
+    const forgotPasswordClicked = async (e) => {
         e.preventDefault();
-        try{
-            let email=login.username;
+        try {
+            let email = login.username;
             await auth.sendPasswordResetEmail(email)
         }
-        catch(e){
+        catch (e) {
             // console.log(e)
         }
 
@@ -202,27 +214,34 @@ const Login = ({ open, setOpen, setAccount}) => {
                         <Typography style={{ marginTop: 20 }}>{account.subHeading}</Typography>
                     </Box>
                     {
-                        account.view === 'login' ? 
-                    <Box className={classes.login}>
-                        <TextField onChange={(e) => onValueChange(e)} name='username' label='Enter Email/Mobile number' />
-
-                        <TextField onChange={(e) => onValueChange(e)} name='password' label='Enter Password' type="password"/>
-                        <Typography className={classes.text}>By continuing, you agree to Flipkart's Terms of Use and Privacy Policy.</Typography>
-                        <Button onClick={() => loginUser()} className={classes.loginbtn} >Login</Button>
-                        <Typography className={classes.text} style={{ textAlign: 'center' }}>OR</Typography>
-                        <Button className={classes.requestbtn} onClick={forgotPasswordClicked}>Forgot Password?</Button>
-                        <Typography className={classes.smallText} onClick={() => toggleUserAccount()}>To reset password type email in email section and click on above button</Typography>
-                        <Typography className={classes.createText} onClick={() => toggleUserAccount()}>New to Flipkart? Create an account</Typography>
-                    </Box> :
-                    <Box className={classes.login}>
-                        <TextField onChange={(e) => onInputChange(e)} name='firstname' label='Enter Firstname' />
-                        <TextField onChange={(e) => onInputChange(e)} name='lastname' label='Enter Lastname' />
-                        <TextField onChange={(e) => onInputChange(e)} name='username' label='Enter Username' />
-                        <TextField onChange={(e) => onInputChange(e)} name='email' label='Enter Email' />
-                        <TextField onChange={(e) => onInputChange(e)} name='password' label='Enter Password' />
-                        <TextField onChange={(e) => onInputChange(e)} name='phone' label='Enter Phone' />
-                        <Button className={classes.loginbtn} onClick={() => signupUser()} >Continue</Button>
-                    </Box>
+                        account.view === 'login' ?
+                            <Box className={classes.login}>
+                                <TextField onChange={(e) => onValueChange(e)} name='username' label='Enter Email/Mobile number' />
+                                {errors.Email && <p className={classes.error}>{errors.Email}</p>}
+                                <TextField onChange={(e) => onValueChange(e)} name='password' label='Enter Password' type="password" />
+                                {errors.Password && <p className={classes.error}>{errors.Password}</p>}
+                                <Typography className={classes.text}>By continuing, you agree to Flipkart's Terms of Use and Privacy Policy.</Typography>
+                                <Button onClick={() => loginUser()} className={classes.loginbtn} >Login</Button>
+                                <Typography className={classes.text} style={{ textAlign: 'center' }}>OR</Typography>
+                                <Button className={classes.requestbtn} onClick={forgotPasswordClicked}>Forgot Password?</Button>
+                                <Typography className={classes.text} onClick={() => toggleUserAccount()}>To reset your password, type your email and click on Forgot Password</Typography>
+                                <Typography className={classes.createText} onClick={() => toggleUserAccount()}>New to Flipkart? Create an account</Typography>
+                            </Box> :
+                            <Box className={classes.login}>
+                                <TextField onChange={(e) => onInputChange(e)} name='firstname' label='Enter Firstname' />
+                                {errors.firstname && <p className={classes.error}>{errors.firstname}</p>}
+                                <TextField onChange={(e) => onInputChange(e)} name='lastname' label='Enter Lastname' />
+                                {errors.lastname && <p className={classes.error}>{errors.lastname}</p>}
+                                <TextField onChange={(e) => onInputChange(e)} name='username' label='Enter Username' />
+                                {errors.username && <p className={classes.error}>{errors.username}</p>}
+                                <TextField onChange={(e) => onInputChange(e)} name='email' label='Enter Email' />
+                                {errors.email && <p className={classes.error}>{errors.email}</p>}
+                                <TextField onChange={(e) => onInputChange(e)} name='password' label='Enter Password' type="password"/>
+                                {errors.password && <p className={classes.error}>{errors.password}</p>}
+                                <TextField onChange={(e) => onInputChange(e)} name='phone' label='Enter Phone' />
+                                {errors.phone && <p className={classes.error}>{errors.phone}</p>}
+                                <Button className={classes.loginbtn} onClick={() => signupUser()} >Continue</Button>
+                            </Box>
                     }
 
                 </Box>
