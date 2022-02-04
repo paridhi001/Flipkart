@@ -41,7 +41,7 @@ const Profile = ({ account, setAccount }) => {
                 onClose={handleClose}
                 className={classes.component}
             >
-                <MenuItem onClick={() => { handleClose(); logout();}}>
+                <MenuItem onClick={(e) => {e.preventDefault(); handleClose(); logout();}}>
                     <PowerSettingsNew fontSize='small' color='primary'/> 
                     <Typography className={classes.logout}>Logout</Typography>
                 </MenuItem>

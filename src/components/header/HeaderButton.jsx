@@ -101,7 +101,7 @@ const HeaderButton = () => {
             {
                 account ? <Profile account={account} setAccount={setAccount} /> :
                     <Link to='/#'>
-                        <Button variant="contained" onClick={() => openLoginDialog()} className={classes.login}>LogIn</Button>
+                        <Button variant="contained" onClick={(e) => {e.preventDefault(); openLoginDialog()}} className={classes.login}>LogIn</Button>
                     </Link>
             }
             <Typography style={{ marginTop: 15, marginBottom: 10 }}>More</Typography>

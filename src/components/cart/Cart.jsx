@@ -1,5 +1,4 @@
 import { Box, makeStyles, Typography, Button } from "@material-ui/core";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from '../../redux/actions/cartActions';
 import { payUsingPaytm } from '../../service/api';
@@ -51,10 +50,6 @@ const Cart = () => {
     const { cartItems } = useSelector(state => state.cart);
 
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        console.log(cartItems);
-    })
 
     const removeItemFromCart = (id) => {
         dispatch(removeFromCart(id));
